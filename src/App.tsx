@@ -1,7 +1,9 @@
+import UseTransition from "./components/useTransition";
+
 export default function App() {
     return (
-        <div>
-            App
-        </div>
+        <>
+            <UseTransition />
+        </>
     )
 }
