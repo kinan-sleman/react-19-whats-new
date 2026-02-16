@@ -1,9 +1,9 @@
-import UseTransition from "./components/useTransition";
+import FormAction from "./components/FormAction";
 
 export default function App() {
     return (
         <>
-            <UseTransition />
+            <FormAction />
         </>
     )
 }

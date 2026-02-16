@@ -1,6 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import './index.css'
+// import './useTransition.css'
+import './formAction.css'
 import App from './App.tsx'
 
 createRoot(document.getElementById('root')!).render(

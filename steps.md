@@ -11,3 +11,4 @@ npm i @faker-js/faker
 ```json
 npm install -D babel-plugin-react-compiler@latest
 ```
+### By convention: any function that used async transition is called "Action"
