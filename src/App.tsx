@@ -1,9 +1,9 @@
-import FormAction from "./components/FormAction";
+import Use from "./components/Use";
 
 export default function App() {
     return (
         <>
-            <FormAction />
+            <Use />
         </>
     )
 }
