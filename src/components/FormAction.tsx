@@ -1,4 +1,4 @@
-import { useActionState } from "react"
+import { useActionState, useOptimistic } from "react"
 import { updateNameInDB } from "../utils"
 interface FormState {
     name: string;
@@ -13,11 +13,11 @@ export default function FormAction() {
             name: JSON.parse(localStorage.getItem("name") || '"Anonymous user"')
         }
     )
-
+    const[optimisticName, setOptimisticName]= useOptimistic(state.name)
     async function updateName(prevState: FormState, formData: FormData): Promise<FormState> {
+        const nameValue = formData.get("name");
+        setOptimisticName(String(nameValue))
         try {
-            const nameValue = formData.get("name");
-            
             if (typeof nameValue !== "string") {
                 return { ...prevState, error: new Error("Invalid name") };
             }
@@ -35,7 +35,7 @@ export default function FormAction() {
     return (
         <>
             <p className="username">
-                Current user: <span>{state.name}</span>
+                Current user: <span>{optimisticName}</span>
             </p>
 
             {isPending && <p>Loading...</p>}
