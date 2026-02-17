@@ -11,7 +11,7 @@ type MyButtonProps = ComponentPropsWithRef<"button"> & {
 };
 
 export default function FormAction() {
-    const ref = useRef()
+    const ref = useRef(null)
     const [state, actionFunction, isPending] = useActionState<FormState, FormData>(
         updateName,
         {
