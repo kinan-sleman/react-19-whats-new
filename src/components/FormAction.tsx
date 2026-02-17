@@ -1,4 +1,4 @@
-import { useActionState, useOptimistic, type ComponentPropsWithRef, type ReactNode } from "react"
+import { useActionState, useOptimistic, useRef, type ComponentPropsWithRef, type ReactNode } from "react"
 import { updateNameInDB } from "../utils"
 import { useFormStatus } from "react-dom";
 interface FormState {
@@ -11,6 +11,7 @@ type MyButtonProps = ComponentPropsWithRef<"button"> & {
 };
 
 export default function FormAction() {
+    const ref = useRef()
     const [state, actionFunction, isPending] = useActionState<FormState, FormData>(
         updateName,
         {
@@ -51,7 +52,7 @@ export default function FormAction() {
                     name="name"
                     required
                 />
-                <MyButton type="submit" >Update</MyButton>
+                <MyButton ref={ref} type="submit" >Update</MyButton>
                 {!isPending && state.error && (
                     <p className="error">{state.error.message}</p>
                 )}
@@ -60,6 +61,7 @@ export default function FormAction() {
     )
 }
 
+// we don't need to use forwardRef in React 19, we can use pass the ref (as rest) to this element
 const MyButton = ({ children, ...rest }: MyButtonProps) => {
     const { pending } = useFormStatus()
     return (
