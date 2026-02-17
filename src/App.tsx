@@ -1,9 +1,9 @@
-import Use from "./components/Use";
+import MISCOptimization from "./components/MISCOptimization";
 
 export default function App() {
     return (
         <>
-            <Use />
+            <MISCOptimization />
         </>
     )
 }
