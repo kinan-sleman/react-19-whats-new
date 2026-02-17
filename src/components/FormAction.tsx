@@ -1,32 +1,33 @@
-import { useState } from "react"
+import { useActionState } from "react"
 import { updateNameInDB } from "../utils"
+interface FormState {
+    name: string;
+    error: Error | null;
+}
 
 export default function FormAction() {
-    const [name, setName] = useState<string>(
-        () => {
-            const saved = localStorage.getItem("name");
-            try {
-                return saved ? JSON.parse(saved) : "Anonymous user";
-            } catch {
-                return "Anonymous user";
-            }
+    const [state, actionFunction, isPending] = useActionState<FormState, FormData>(
+        updateName,
+        {
+            error: null,
+            name: JSON.parse(localStorage.getItem("name") || '"Anonymous user"')
         }
     )
 
-    async function formAction(formData: FormData) {
-        // formData object can get the changes depending on input name
-        const entry = formData.get("name");
-        
-        if (typeof entry !== "string") return;
-
+    async function updateName(prevState: FormState, formData: FormData): Promise<FormState> {
         try {
-            const newName = await updateNameInDB(entry)
-            setName(newName)
+            const nameValue = formData.get("name");
+            
+            if (typeof nameValue !== "string") {
+                return { ...prevState, error: new Error("Invalid name") };
+            }
+
+            const newName = await updateNameInDB(nameValue)
+            return { name: newName, error: null }
         } catch (error) {
-            if (error instanceof Error) {
-                console.error(error.message)
-            } else {
-                console.error("An unknown error occurred")
+            return { 
+                error: error instanceof Error ? error : new Error("Unknown error"), 
+                name: prevState.name 
             }
         }
     }
@@ -34,15 +35,21 @@ export default function FormAction() {
     return (
         <>
             <p className="username">
-                Current user: <span>{name}</span>
+                Current user: <span>{state.name}</span>
             </p>
-            <form action={formAction}>
+
+            {isPending && <p>Loading...</p>}
+
+            <form action={actionFunction}>
                 <input
                     type="text"
                     name="name"
                     required
                 />
-                <button type="submit">Update</button>
+                <button type="submit" disabled={isPending}>Update</button>
+                {!isPending && state.error && (
+                    <p className="error">{state.error.message}</p>
+                )}
             </form>
         </>
     )
