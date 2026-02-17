@@ -1,9 +1,14 @@
-import { useActionState, useOptimistic } from "react"
+import { useActionState, useOptimistic, type ComponentPropsWithRef, type ReactNode } from "react"
 import { updateNameInDB } from "../utils"
+import { useFormStatus } from "react-dom";
 interface FormState {
     name: string;
     error: Error | null;
 }
+
+type MyButtonProps = ComponentPropsWithRef<"button"> & {
+    children: ReactNode;
+};
 
 export default function FormAction() {
     const [state, actionFunction, isPending] = useActionState<FormState, FormData>(
@@ -46,11 +51,18 @@ export default function FormAction() {
                     name="name"
                     required
                 />
-                <button type="submit" disabled={isPending}>Update</button>
+                <MyButton type="submit" >Update</MyButton>
                 {!isPending && state.error && (
                     <p className="error">{state.error.message}</p>
                 )}
             </form>
         </>
+    )
+}
+
+const MyButton = ({ children, ...rest }: MyButtonProps) => {
+    const { pending } = useFormStatus()
+    return (
+        <button {...rest} disabled={pending}>{pending ? "Submitting" :children}</button>
     )
 }
